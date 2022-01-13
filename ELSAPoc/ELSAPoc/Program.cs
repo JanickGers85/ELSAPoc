@@ -1,6 +1,21 @@
+using Elsa;
+using Elsa.Persistence.EntityFramework.Core.Extensions;
+using Elsa.Persistence.EntityFramework.Sqlite;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// configuring ELSA's service
+builder.Services.AddElsa(elsa =>
+        // using SQLite persistence via Entity Framework
+        elsa.UseEntityFrameworkPersistence(ef => ef.UseSqlite())
+        .AddConsoleActivities()
+        .AddHttpActivities(builder.Configuration.GetSection("Elsa").Bind)
+        .AddQuartzTemporalActivities()
+        .AddWorkflowsFrom<Startup>()
+    );
+
+builder.Services.AddElsaApiEndpoints();
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -13,13 +28,17 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseHttpsRedirection();
+app.UseHttpActivities();
 app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.UseEndpoints(ep =>
+{
+    ep.MapControllers();
+    ep.MapFallbackToPage("/_Host");
+});
 
+app.MapRazorPages();
 app.Run();
