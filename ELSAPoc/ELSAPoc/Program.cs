@@ -11,11 +11,11 @@ builder.Services.AddElsa(elsa =>
         .AddConsoleActivities()
         .AddHttpActivities(builder.Configuration.GetSection("Elsa").Bind)
         .AddQuartzTemporalActivities()
-        .AddWorkflowsFrom<Startup>()
+        // this will use reflection to load all workflows (i.e. classes which inherits from IWorkflow interface)
+        .AddWorkflowsFrom(typeof(Program).Assembly)
     );
 
 builder.Services.AddElsaApiEndpoints();
-
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
