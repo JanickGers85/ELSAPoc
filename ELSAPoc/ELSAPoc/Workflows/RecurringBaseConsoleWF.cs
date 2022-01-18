@@ -5,6 +5,9 @@ using NodaTime;
 
 namespace ELSAPoc.Workflows
 {
+    /// <summary>
+    /// This WF simply print a message on the stdout, every 5 seconds
+    /// </summary>
     public class RecurringBaseConsoleWF : IWorkflow
     {
         public void Build(IWorkflowBuilder builder)

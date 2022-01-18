@@ -10,6 +10,7 @@ builder.Services.AddElsa(elsa =>
         elsa.UseEntityFrameworkPersistence(ef => ef.UseSqlite())
         .AddConsoleActivities()
         .AddHttpActivities(builder.Configuration.GetSection("Elsa").Bind)
+        .AddEmailActivities(builder.Configuration.GetSection("Smtp").Bind)
         .AddQuartzTemporalActivities()
         // this will use reflection to load all workflows (i.e. classes which inherits from IWorkflow interface)
         .AddWorkflowsFrom(typeof(Program).Assembly)
